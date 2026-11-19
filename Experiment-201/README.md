@@ -1,133 +1,146 @@
-# Experiment 201: Process Creation using fork() in QNX
-
-## Aim
-
-Write a C program to implement **process creation using fork() in QNX/Linux** and observe the behavior of **parent and child processes** when the parent terminates.
+# Experiment-201 : Process Creation using posix_spawn() in QNX: VMware Virtual Machine
 
 ---
 
-## Objective
-
-* To understand **process creation using fork()**.
-* To observe the **difference between parent and child processes**.
-* To demonstrate how **child processes continue execution after the parent exits**.
+## Objective  
+To create, build, and execute a parent program and a child program in QNX, where the parent creates a new child process using `posix_spawn()`, waits for it to finish using `waitpid()`, and both processes display their process ID (PID), on QNX running inside a VMware virtual machine.
 
 ---
 
-## Problem Statement
+## Hardware Requirements
 
-Write a program that **creates multiple child processes using fork()**.
-Each child process should print its **PID and parent PID**.
-The parent process should **terminate after 5 seconds**, and the child processes should print their **PID and new parent PID after the parent exits**.
-
----
-
-# Algorithm
-
-1. Start the program.
-2. Print the **Parent Process ID (PID)**.
-3. Define the number of child processes to create.
-4. Use a **for loop** to create multiple child processes.
-5. Inside the loop call `fork()` to create a new process.
-6. If `fork()` returns a negative value:
-
-   * Print an error message.
-   * Terminate the program.
-7. If `fork()` returns **0**, it is the child process:
-
-   * Print the child PID and parent PID.
-   * Wait for **6 seconds** to allow the parent to terminate.
-   * Print the child PID and new parent PID.
-   * Exit the child process.
-8. If `fork()` returns a positive value:
-
-   * Continue the loop to create the next child process.
-9. After creating all children, the parent process:
-
-   * Sleeps for **5 seconds**.
-10. Print a message indicating the parent is exiting.
-11. Terminate the parent process.
-12. End the program.
+### For VMware Setup
+- Host PC / Laptop (Intel/AMD processor)
+- Minimum 8 GB RAM recommended
+- Ethernet or Wi-Fi network interface
+- VMware Workstation / VMware Player
+- QNX Neutrino image configured for x86_64 virtual machine
 
 ---
 
-# Program
+## Software / Tools Required  
+
+- QNX Momentics IDE (installed on host machine)
+- QNX Neutrino RTOS image for the VMware VM
+- QNX cross-compiler toolchain (`qcc`)
+- Target connection through:
+  - Network (preferred) **or**
+  - Serial console
+
+---
+
+## Algorithm
+
+### Child Program
+
+1. Start the child program.
+2. Print **"I am the Child Process"**.
+3. Print the child PID using `getpid()`.
+4. Print the parent PID using `getppid()`.
+5. Return 0 and end the program.
+
+### Parent Program
+
+1. Start the parent program.
+2. Declare the variable `pid` and the argument list `{"child", NULL}`.
+3. Print **"I am the Parent Process"**.
+4. Print the parent PID using `getpid()`.
+5. Call `posix_spawn()` with the path `./child`, the argument list and the environment (`environ`) to create the child process. The PID of the new process is stored in `pid` and the return value is stored in `status`.
+6. If `status` is **0**, the child was created successfully:
+   * Print the child PID.
+   * Wait for the child process to terminate using `waitpid()`.
+7. Otherwise, print **"Spawn failed"** along with the error number returned in `status`.
+8. Return 0 and end the program.
+
+---
+
+## Program
+
+> **Note:** The parent program spawns `./child`, so the child program must be built with the executable name `child` and placed in the same directory as the parent program.
+
+### Child Program
 
 ```c
 #include <stdio.h>
-#include <stdlib.h>
 #include <unistd.h>
-#include <sys/types.h>
 
-#define NUM_CHILDREN 3
+int main(void)
+{
+    printf("I am the Child Process\n");
+    printf("Child PID  = %d\n", (int)getpid());
+    printf("Parent PID = %d\n", (int)getppid());
+
+    return 0;
+}
+```
+
+### Parent Program
+
+```c
+#include <stdio.h>
+#include <spawn.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <unistd.h>
+
+extern char **environ;
 
 int main(void)
 {
     pid_t pid;
 
-    printf("Parent started. PID = %d\n", getpid());
+    char *args[] = {"child", NULL};
 
-    /* Create multiple children */
-    for (int i = 0; i < NUM_CHILDREN; i++) {
+    printf("I am the Parent Process\n");
+    printf("Parent PID = %d\n", (int)getpid());
 
-        pid = fork();
+    int status = posix_spawn(
+        &pid, "./child", NULL, NULL, args, environ
+    );
 
-        if (pid < 0) {
-            perror("fork failed");
-            exit(EXIT_FAILURE);
-        }
-
-        /* Child process */
-        if (pid == 0) {
-
-            printf("Child %d started. PID = %d, Parent PID = %d\n",
-                   i + 1, getpid(), getppid());
-
-            /* Wait until parent terminates */
-            sleep(6);
-
-            printf("Child %d running after parent exit. My PID = %d, New Parent PID = %d\n",
-                   i + 1, getpid(), getppid());
-
-            exit(EXIT_SUCCESS);
-        }
-
-        /* Parent continues loop to create next child */
+    if (status == 0)
+    {
+        printf("Child PID  = %d\n", (int)pid);
+        waitpid(pid, NULL, 0);
+    }
+    else
+    {
+        printf("Spawn failed: %d\n", status);
     }
 
-    /* Parent process */
-    printf("Parent sleeping for 5 seconds...\n");
-    sleep(5);
-
-    printf("Parent exiting now. PID = %d\n", getpid());
-    exit(EXIT_SUCCESS);
+    return 0;
 }
 ```
 
 ---
 
-# Expected Output
+## Sample Output
 
 ```text
-Parent started. PID = 1200
-Child 1 started. PID = 1201, Parent PID = 1200
-Child 2 started. PID = 1202, Parent PID = 1200
-Child 3 started. PID = 1203, Parent PID = 1200
-Parent sleeping for 5 seconds...
-Parent exiting now. PID = 1200
-Child 1 running after parent exit. My PID = 1201, New Parent PID = 1
-Child 2 running after parent exit. My PID = 1202, New Parent PID = 1
-Child 3 running after parent exit. My PID = 1203, New Parent PID = 1
+I am the Parent Process
+Parent PID = 146
+Child PID  = 147
+I am the Child Process
+Child PID  = 147
+Parent PID = 146
 ```
 
-*(After the parent exits, the child processes are adopted by the **init process (PID 1)**.)*
+*(PID values differ on every run. The child's Parent PID matches the parent's PID, and the Child PID printed by the parent matches the child's own PID.)*
 
 ---
 
-# Ouput
+## Output
+
+<!-- Student: paste your output screenshot here, e.g. ![Output Image](output.png) -->
+
+<br>
+<br>
+<br>
+<br>
 
 ---
 
-# Result
+## Result
+Thus, a child process was successfully created from a parent program using `posix_spawn()` on the QNX operating system running in a VMware virtual machine. The parent waited for the child to terminate using `waitpid()`, and the PIDs of the parent and child processes were displayed.
 
-Thus, the program successfully demonstrated **process creation using fork()** and showed that **child processes continue executing even after the parent process terminates**.
+---
