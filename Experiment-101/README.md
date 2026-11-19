@@ -42,6 +42,28 @@ To create, build, and execute a C program in QNX that creates a child process us
 
 ---
 
+## Algorithm
+
+1. Start the program.
+2. Print **"Program started"**.
+3. Call `fork()` to create a new process and store the returned value in `pid`.
+4. If `pid` is **0**, it is the **child process**:
+   * Print **"I am the Child Process"**.
+   * Print the child PID using `getpid()`.
+   * Print the parent PID using `getppid()`.
+   * Sleep for **30 seconds**.
+5. If `pid` is **greater than 0**, it is the **parent process**:
+   * Print **"I am the Parent Process"**.
+   * Print the parent PID using `getpid()`.
+   * Print the child PID (the value returned by `fork()`).
+   * Sleep for **30 seconds**.
+6. If `pid` is **negative**, process creation has failed:
+   * Print **"Process creation failed"**.
+   * Terminate the program with return value 1.
+7. Return 0 and end the program.
+
+---
+
 ## Program
 
 ```c
