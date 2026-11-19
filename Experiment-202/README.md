@@ -1,4 +1,4 @@
-# Experiment-202 : Thread Synchronization using Mutex in QNX: VMware Virtual Machine
+# Experiment-202 : Thread Synchronization using Mutex in QNX
 
 ---
 

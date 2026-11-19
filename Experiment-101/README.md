@@ -1,4 +1,4 @@
-# Experiment-101 : Process Creation using fork() in QNX: VMware Virtual Machine
+# Experiment-101 : Process Creation using fork() in QNX
 
 ---
 

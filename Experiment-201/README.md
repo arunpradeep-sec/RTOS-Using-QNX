@@ -1,4 +1,4 @@
-# Experiment-201 : Process Creation using posix_spawn() in QNX: VMware Virtual Machine
+# Experiment-201 : Process Creation using posix_spawn() in QNX
 
 ---
 
