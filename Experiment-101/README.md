@@ -63,4 +63,64 @@ Thus, a simple Hello World application was successfully developed, compiled, and
 
 ---
 
+## Additional Program: Process Creation using fork()
+
+### Aim
+To create a child process using `fork()` and display the process ID (PID) of the parent and the child.
+
+### Program
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <sys/types.h>
+
+int main(void)
+{
+    pid_t pid;
+
+    printf("Program started\n");
+
+    pid = fork();
+
+    if (pid == 0)
+    {
+        printf("I am the Child Process\n");
+        printf("Child PID  = %d\n", (int)getpid());
+        printf("Parent PID = %d\n", (int)getppid());
+        sleep(30);
+    }
+    else if (pid > 0)
+    {
+        printf("I am the Parent Process\n");
+        printf("Parent PID = %d\n", (int)getpid());
+        printf("Child PID  = %d\n", (int)pid);
+        sleep(30);
+    }
+    else
+    {
+        printf("Process creation failed\n");
+        return 1;
+    }
+
+    return 0;
+}
+```
+
+### Expected Output
+
+```text
+Program started
+I am the Parent Process
+Parent PID = 265
+Child PID  = 266
+I am the Child Process
+Child PID  = 266
+Parent PID = 265
+```
+
+*(PID values differ on every run, and the parent and child lines may appear in either order. Both processes sleep for 30 seconds before exiting.)*
+
+---
+
 
