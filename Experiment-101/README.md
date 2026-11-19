@@ -1,9 +1,9 @@
-# Experiment-101 : Hello World Application on QNX: VMware Virtual Machine and Raspberry Pi
+# Experiment-101 : Process Creation using fork() in QNX: VMware Virtual Machine and Raspberry Pi
 
 ---
 
 ## Objective  
-To create, build, and execute a simple “Hello World” program in QNX on two targets:  
+To create, build, and execute a C program in QNX that creates a child process using `fork()` and displays the process ID (PID) of the parent and child processes, on two targets:  
 1) QNX running inside a VMware virtual machine  
 2) QNX running on Raspberry Pi hardware
 
@@ -42,33 +42,7 @@ To create, build, and execute a simple “Hello World” program in QNX on two t
 
 ---
 
-## Program (hello.c)
-
-```c
-#include <stdio.h>
-
-int main(void) {
-    printf("Hello World!!!\n");
-    printf("Name:Arun\n");
-    printf("Regisgter Number:1234567\n");
-    return 0;
-}
-```
-## Output
-![Output Image](exp1.png)
----
-
-## Result
-Thus, a simple Hello World application was successfully developed, compiled, and executed on the QNX operating system using both VMware virtual machine and Raspberry Pi hardware targets.
-
----
-
-## Additional Program: Process Creation using fork()
-
-### Aim
-To create a child process using `fork()` and display the process ID (PID) of the parent and the child.
-
-### Program
+## Program
 
 ```c
 #include <stdio.h>
@@ -107,7 +81,9 @@ int main(void)
 }
 ```
 
-### Expected Output
+---
+
+## Sample Output
 
 ```text
 Program started
@@ -123,4 +99,18 @@ Parent PID = 265
 
 ---
 
+## Output
 
+<!-- Student: paste your output screenshot here, e.g. ![Output Image](output.png) -->
+
+<br>
+<br>
+<br>
+<br>
+
+---
+
+## Result
+Thus, a C program using `fork()` was successfully developed, compiled, and executed on the QNX operating system using both VMware virtual machine and Raspberry Pi hardware targets, and the PIDs of the parent and child processes were displayed.
+
+---
