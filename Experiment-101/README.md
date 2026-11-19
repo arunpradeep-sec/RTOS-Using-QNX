@@ -1,11 +1,9 @@
-# Experiment-101 : Process Creation using fork() in QNX: VMware Virtual Machine and Raspberry Pi
+# Experiment-101 : Process Creation using fork() in QNX: VMware Virtual Machine
 
 ---
 
 ## Objective  
-To create, build, and execute a C program in QNX that creates a child process using `fork()` and displays the process ID (PID) of the parent and child processes, on two targets:  
-1) QNX running inside a VMware virtual machine  
-2) QNX running on Raspberry Pi hardware
+To create, build, and execute a C program in QNX that creates a child process using `fork()` and displays the process ID (PID) of the parent and child processes, on QNX running inside a VMware virtual machine.
 
 ---
 
@@ -18,23 +16,12 @@ To create, build, and execute a C program in QNX that creates a child process us
 - VMware Workstation / VMware Player
 - QNX Neutrino image configured for x86_64 virtual machine
 
-### For Raspberry Pi Setup
-- Raspberry Pi board (Model 3 / 4 recommended)
-- MicroSD card with QNX image flashed
-- Power adapter for Raspberry Pi
-- HDMI monitor and cable
-- USB keyboard and mouse
-- Ethernet cable or Wi-Fi connection
-- Host PC running QNX Momentics IDE
-
 ---
 
 ## Software / Tools Required  
 
 - QNX Momentics IDE (installed on host machine)
-- QNX Neutrino RTOS images for:
-  - VMware VM
-  - Raspberry Pi
+- QNX Neutrino RTOS image for the VMware VM
 - QNX cross-compiler toolchain (`qcc`)
 - Target connection through:
   - Network (preferred) **or**
@@ -133,6 +120,6 @@ Parent PID = 265
 ---
 
 ## Result
-Thus, a C program using `fork()` was successfully developed, compiled, and executed on the QNX operating system using both VMware virtual machine and Raspberry Pi hardware targets, and the PIDs of the parent and child processes were displayed.
+Thus, a C program using `fork()` was successfully developed, compiled, and executed on the QNX operating system using a VMware virtual machine, and the PIDs of the parent and child processes were displayed.
 
 ---
